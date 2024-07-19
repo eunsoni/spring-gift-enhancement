@@ -1,40 +1,35 @@
 package gift.entity;
 
-import gift.exception.ProductNoConferredException;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-
-import java.util.List;
 
 @Entity
 public class Product {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Column(nullable = false)
     private String name;
 
-    @NotNull
+    @Column(nullable = false)
     private int price;
 
-    @NotNull
-    @Pattern(
-            regexp = "^(http|https)://.*$",
-            message = "Invalid image URL format"
-    )
+    @Column(nullable = false)
     private String imageUrl;
 
-    public Product(){
-    }
 
+    @ManyToOne
+    @JoinColumn(name = "categoryId", nullable = false)
+    private Category category;
 
-    public Product(String name, int price, String imageUrl) {
+    protected Product() {}
+
+    public Product(String name, int price, String imageUrl, Category category) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.category = category;
     }
 
     public Long getId() {
@@ -53,16 +48,14 @@ public class Product {
         return imageUrl;
     }
 
+    public Category getCategory() {
+        return category;
+    }
 
-    public void edit(String email, int price, String imageUrl) {
+    public void update(String name, int price, String imageUrl, Category category) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-    }
-
-    private void checkName(String name) {
-        if (name.contains("카카오")) {
-            throw new ProductNoConferredException(List.of("카카오"));
-        }
+        this.category = category;
     }
 }
