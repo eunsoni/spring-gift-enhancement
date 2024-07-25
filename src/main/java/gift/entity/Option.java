@@ -30,10 +30,13 @@ public class Option {
 
     public Option(String name, int quantity, Product product){
         if(name.length()>50){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Option name must be less than 50 characters");
         }
-        if(quantity<1||quantity>=100_000_000){
-            throw new IllegalArgumentException();
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than 0");
+        }
+        if (quantity > 100_000_000) {
+            throw new IllegalArgumentException("Quantity must be less than or equal to 100,000,000");
         }
         if(product == null) {
             throw new IllegalArgumentException("Product cannot be null");

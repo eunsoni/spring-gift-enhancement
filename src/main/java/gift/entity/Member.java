@@ -6,8 +6,6 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-import static gift.dto.Role.ADMIN;
-
 @Entity
 public class Member {
 

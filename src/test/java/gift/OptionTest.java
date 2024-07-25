@@ -48,21 +48,24 @@ class OptionTest {
     @Test
     void test1() {
         assertThatThrownBy(() -> new Option("option".repeat(50), 1, product))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Option name must be less than 50 characters");
     }
 
     // 옵션 수량이 0인 경우
     @Test
     void test2() {
         assertThatThrownBy(() -> new Option("option", 0, product))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Quantity must be greater than 0");
     }
 
     // 옵션 수량이 1억보다 큰 경우
     @Test
     void test3() {
         assertThatThrownBy(() -> new Option("option", 100_000_001, product))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Quantity must be less than or equal to 100,000,000");
     }
 
     // 같은 상품의 옵션 이름이 중복될 경우
@@ -73,29 +76,31 @@ class OptionTest {
         Option option2 = new Option("Option1", 20, product);
 
         optionRepository.save(option1);
-        optionRepository.flush(); //
 
         assertThatThrownBy(() -> {
             optionRepository.save(option2);
-            optionRepository.flush();
-        }).isInstanceOf(DataIntegrityViolationException.class);
+        }).isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessageContaining("Unique index or primary key violation");
     }
+
 
     // 상품이 존재하지 않는 경우
     @Test
     void test5() {
         assertThatThrownBy(() -> new Option("option", 10, null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Product cannot be null");
     }
 
     // 옵션 이름에 허용되지 않은 특수 문자가 포함된 경우
     @Test
-    void test7() {
+    void test6() {
         var invalidCharacters = new String[]{"!", "@", "#", "$", "%", "^", "*", "<", ">", "?"};
 
         for (String invalidChar : invalidCharacters) {
             assertThatThrownBy(() -> new Option("option" + invalidChar, 10, product))
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Invalid characters in option name");
         }
     }
 }
