@@ -112,5 +112,5 @@ public class Product {
             throw new ProductNoConferredException(List.of("카카오"));
         }
     }
-    
+
 }
