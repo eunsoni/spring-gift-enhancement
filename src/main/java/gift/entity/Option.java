@@ -27,6 +27,7 @@ public class Option {
     public Option() {
     }
 
+
     public Option(String name, int quantity, Product product){
         if(name.length()>50){
             throw new IllegalArgumentException("Option name must be less than 50 characters");
@@ -43,6 +44,7 @@ public class Option {
         if(!name.matches("^[\\w\\s\\(\\)\\[\\]\\+\\-\\&\\/\\_]+$")) {
             throw new IllegalArgumentException("Invalid characters in option name");
         }
+
         this.name = name;
         this.quantity = quantity;
         this.product = product;
@@ -86,4 +88,5 @@ public class Option {
         }
         this.quantity -= quantity;
     }
+
 }
