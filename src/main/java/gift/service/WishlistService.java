@@ -5,11 +5,9 @@ import gift.entity.Option;
 import gift.entity.Product;
 import gift.entity.Wishlist;
 import gift.repository.WishlistRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class WishlistService {
@@ -19,7 +17,6 @@ public class WishlistService {
     private final MemberService memberService;
     private final OptionService optionService;
 
-    @Autowired
     public WishlistService(WishlistRepository wishlistRepository, ProductService productService,
                            MemberService memberService, OptionService optionService) {
         this.wishlistRepository = wishlistRepository;

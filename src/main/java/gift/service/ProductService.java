@@ -16,10 +16,7 @@ import java.util.Set;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,14 +25,9 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
 
-    private final OptionService optionService;
-
-    @Autowired
-    public  ProductService(ProductRepository productRepository, CategoryService categoryService, OptionService optionService){
+    public ProductService(ProductRepository productRepository, CategoryService categoryService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
-        this.optionService = optionService;
-
     }
 
     public Page<Product> getProducts(Pageable pageable) {
@@ -44,7 +36,7 @@ public class ProductService {
 
     public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> ProductNotFoundException.of(id));
     }
 
     public void addProduct(ProductDto productDto) {
@@ -67,15 +59,13 @@ public class ProductService {
         Category category = categoryService.getCategory(productDto.getCategoryId());
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> ProductNotFoundException.of(id));
+        
         product.edit(productDto.getName(), productDto.getPrice(), productDto.getImageUrl());
+        product.setCategory(category);
 
         Set<Option> options = convertOptionDtosToOptions(productDto.getOptions(), product);
-        product.edit(productDto.getName(), productDto.getPrice(), productDto.getImageUrl());
         product.setOptions(options);
-        product.setCategory(category);
-        for (Option option : options) {
-            option.setProduct(product);
-        }
+        
         productRepository.save(product);
     }
 

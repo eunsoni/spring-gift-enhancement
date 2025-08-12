@@ -1,27 +1,24 @@
 package gift.service;
 
-
 import gift.dto.MemberDto;
 import gift.entity.Member;
 import gift.exception.MemberNotFoundException;
 import gift.repository.MemberRepository;
-
 import gift.util.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MemberService {
 
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+        this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     public String registerMember(MemberDto memberDto) {
         Member newMember = new Member(memberDto.getEmail(), memberDto.getPassword());
@@ -30,14 +27,13 @@ public class MemberService {
     }
 
     public String login(String email, String password) {
-
         Member member = getMember(email);
 
         // 비밀번호 검증
         if (member != null && password.equals(member.getPassword())) {
             return jwtTokenProvider.createToken(email);
         }
-        throw new RuntimeException("Invalid email or password");
+        throw new IllegalArgumentException("Invalid email or password");
     }
 
     public Member getMember(String email) {
